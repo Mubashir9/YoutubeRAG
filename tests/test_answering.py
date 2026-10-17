@@ -25,10 +25,17 @@ def test_invented_only_citations_abstain():
     assert result.text == "Not found in indexed videos."
 
 
-def test_weak_evidence_abstains_without_calling_provider():
-    result = answer_question("Unknown", [evidence(0.9)], Provider(DraftAnswer("claim", ("chunk-1",))))
+def test_distance_alone_does_not_discard_provider_supported_evidence():
+    result = answer_question("What changed?", [evidence(0.9)], Provider(DraftAnswer("Reading changed it.", ("chunk-1",))))
+    assert result.insufficient_evidence is False
+    assert result.citations[0].chunk_id == "chunk-1"
+
+
+def test_insufficient_answer_preserves_explanation_and_citation():
+    result = answer_question("Who?", [evidence()], Provider(DraftAnswer("The transcript does not name her.", ("chunk-1",), True)))
     assert result.insufficient_evidence is True
-    assert not result.citations
+    assert result.text == "The transcript does not name her."
+    assert result.citations[0].chunk_id == "chunk-1"
 
 
 def test_no_provider_is_honest_retrieval_only_mode():

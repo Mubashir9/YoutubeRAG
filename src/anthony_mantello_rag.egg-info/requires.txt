@@ -2,6 +2,9 @@ python-dotenv<2,>=1.0
 streamlit<2,>=1.36
 typer<1,>=0.12
 youtube-transcript-api<2,>=1.2
+sentence-transformers<6,>=3
+chromadb<2,>=0.5
+openai<3,>=1.0
 
 [dev]
 pytest<9,>=8

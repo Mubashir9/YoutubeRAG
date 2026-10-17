@@ -1,0 +1,5 @@
+[server]
+# The app does not need Streamlit's source watcher to discover dependencies.
+# Disabling it avoids noisy Transformers image-model import warnings when
+# torchvision is not installed.
+fileWatcherType = "none"
