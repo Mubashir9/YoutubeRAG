@@ -6,7 +6,7 @@ name = "anthony-mantello-rag"
 version = "0.1.0"
 description = "A local, evidence-backed search assistant for supplied transcripts."
 requires-python = ">=3.11"
-dependencies = ["python-dotenv>=1.0,<2", "streamlit>=1.36,<2", "typer>=0.12,<1", "youtube-transcript-api>=1.2,<2", "sentence-transformers>=3,<6", "chromadb>=0.5,<2"]
+dependencies = ["python-dotenv>=1.0,<2", "streamlit>=1.36,<2", "typer>=0.12,<1", "youtube-transcript-api>=1.2,<2", "sentence-transformers>=3,<6", "chromadb>=0.5,<2", "openai>=1.0,<3"]
 [project.optional-dependencies]
 dev = ["pytest>=8,<9"]
 [project.scripts]

@@ -8,6 +8,7 @@ from .acquisition import CaptionAcquisitionError, fetch_captions
 from .chunking import SequentialWordChunker, load_segments, write_chunks
 from .embeddings import LocalEmbedder
 from .retrieval import ChromaIndex
+from .answering import OpenAIProvider, answer_question
 app = typer.Typer(help="Local transcript RAG assistant.")
 
 @app.command("fetch-transcript")
@@ -33,13 +34,13 @@ def status() -> None:
     typer.echo("Indexing and querying arrive in later phases.")
 
 @app.command("validate-transcript")
-def validate_transcript(source: Path = Path("transcript.json"), video_id: str = VIDEO_ID) -> None:
+def validate_transcript(source: Path = Path("data/raw/b76rDd9FYeY.json"), video_id: str = VIDEO_ID) -> None:
     """Validate and clean one supplied timestamped transcript."""
     root = Path.cwd()
     diagnostics = process_transcript(
         source,
         root / "data" / "raw" / f"{video_id}.json",
-        root / "data" / "processed" / "segments.jsonl",
+        root / "data" / "processed" / f"{video_id}.segments.jsonl",
         root / "data" / "diagnostics" / f"{video_id}.json",
         video_id,
     )
@@ -49,7 +50,7 @@ def validate_transcript(source: Path = Path("transcript.json"), video_id: str = 
 
 @app.command("chunk-transcript")
 def chunk_transcript(segments: Path = Path("data/processed/segments.jsonl"), video_id: str = VIDEO_ID,
-                     output: Path = Path("data/processed/chunks.jsonl"), target_words: int = 200,
+                     output: Path = Path("data/processed/b76rDd9FYeY.chunks.jsonl"), target_words: int = 200,
                      overlap_words: int = 35, max_words: int = 300) -> None:
     """Build deterministic timestamp-aware word-window chunks."""
     chunker = SequentialWordChunker(target_words, overlap_words, max_words)
@@ -76,5 +77,17 @@ def query(text: str, top_k: int | None = None) -> None:
     results = ChromaIndex(settings.index_dir, LocalEmbedder(settings.embedding_model)).query(text, top_k or settings.top_k)
     for n, result in enumerate(results, 1):
         typer.echo(f"{n}. {result.chunk_id} distance={result.score:.4f} {result.timestamp_url}\n   {result.excerpt}")
+
+@app.command("answer")
+def answer(text: str, top_k: int | None = None) -> None:
+    """Answer from retrieved evidence, or abstain when evidence is insufficient."""
+    settings = Settings.from_env()
+    results = ChromaIndex(settings.index_dir, LocalEmbedder(settings.embedding_model)).query(text, top_k or settings.top_k)
+    provider = OpenAIProvider(settings.openai_api_key, settings.openai_model) if settings.openai_api_key else None
+    result = answer_question(text, results, provider)
+    typer.echo(result.text)
+    typer.echo(f"Insufficient evidence: {result.insufficient_evidence}")
+    for citation in result.citations:
+        typer.echo(f"[{citation.chunk_id}] {citation.url}\n  {citation.excerpt}")
 def main() -> None: app()
 

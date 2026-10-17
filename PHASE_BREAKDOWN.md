@@ -41,7 +41,7 @@ The first six phases form the MVP vertical slice. Phase 7 makes it trustworthy a
 
 **Work:**
 
-- Read the project specification and inspect the supplied `YoutubeRAG/transcript.json`.
+- Read the project specification and inspect the supplied `data/raw/b76rDd9FYeY.json`.
 - Confirm the initial video ID, transcript format, and local-only starting scope.
 - Record unknown metadata such as title and publication date as unknown rather than guessing.
 - Agree on the working pattern: one phase per chat, simple explanations, tests at every gate.
@@ -106,7 +106,7 @@ The first six phases form the MVP vertical slice. Phase 7 makes it trustworthy a
 
 **Concepts to explain:** schema validation, immutable raw inputs, conservative cleaning, overlapping caption windows, and why `>>` is not a speaker label.
 
-**Deliverable:** Validated/cleaned segment output and a diagnostics report for `n_jHmfOgpA0`.
+**Deliverable:** Validated/cleaned segment output and a diagnostics report for `b76rDd9FYeY`.
 
 **Acceptance gate:** Invalid records fail with actionable errors; music-only records are removed; mixed speech is retained; repeated runs are deterministic.
 
@@ -140,7 +140,7 @@ The first six phases form the MVP vertical slice. Phase 7 makes it trustworthy a
 - Implement idempotent upsert/reindex behavior and index statistics.
 - Add a retrieval contract containing chunk ID, score/distance, excerpt, video, times, and strategy.
 - Add CLI querying and timestamp URL generation.
-- Test queries such as “upper C workout” and “fishing trip.”
+- Test queries against topics actually present in `b76rDd9FYeY`, such as reading, personal change, and entrepreneurship.
 
 **Concepts to explain:** embeddings, semantic similarity, vector databases, persistence, top-k, and why query/document models must match.
 
@@ -254,9 +254,9 @@ Update this table at the end of each phase.
 | 1 | Complete | 2026-10-17 | Added installable Python scaffold, environment configuration, starter CLI/UI, tests, README, and safe ignores. No secret is required; retrieval-only mode is explicit. | Phase 1.1: add URL-based caption retrieval for the selected video |
 | 1.1 | Complete | 2026-10-17 | Added safe YouTube URL/ID resolution, caption retrieval, atomic raw JSON and provenance sidecar writes, explicit unavailable/blocked errors, and tests. Live retrieval remains dependent on installing dependencies and network/caption availability. | Phase 3: generate timestamp-aware chunks from the validated transcript |
 | 2 | Complete | 2026-10-17 | Re-ran validation for the Phase 1.1 transcript `b76rDd9FYeY`: 842 records kept, no marker-only drops, diagnostics and per-video cleaned segments created. | Phase 3: generate timestamp-aware chunks for both validated transcripts |
-| 3 | Complete | 2026-10-17 | Added deterministic sequential word-window chunking, CLI support, tests, and generated chunks for both validated transcripts. 27 chunks for `n_jHmfOgpA0`; 35 for `b76rDd9FYeY`. | Phase 4: build the persistent embedding index |
+| 3 | Complete | 2026-10-17 | Added deterministic sequential word-window chunking, CLI support, tests, and generated 35 chunks for `b76rDd9FYeY`. | Phase 4: build the persistent embedding index |
 | 4 | Complete | 2026-10-17 | Added local Sentence Transformers embeddings, persistent ChromaDB index, idempotent upsert/model compatibility checks, retrieval contract, CLI indexing/querying, and timestamp links. Live ML smoke testing requires installing new dependencies. | Phase 5: add grounded answers |
-| 5 | Planned | — | — | Add grounded answers |
+| 5 | Complete | 2026-10-17 | Added provider-swappable grounded answers, bounded evidence context, server-side citation validation, trusted timestamp links, and abstention for missing/weak/malformed evidence. 18 tests pass. | Phase 6: build the usable Streamlit UI |
 | 6 | Planned | — | — | Build usable UI |
 | 7 | Planned | — | — | Test and harden MVP |
 | 8 | Planned | — | — | Expand only with authorised transcripts |
@@ -272,7 +272,7 @@ Update this table at the end of each phase.
 
 ## Phase 2 completion notes
 
-- **Changed:** Added `src/youtube_rag/transcript.py` with strict schema validation, conservative marker/whitespace cleaning, stable source indices, atomic writes, and diagnostics. Added `validate-transcript` CLI support and tests. Created `data/raw/n_jHmfOgpA0.json`, `data/processed/segments.jsonl`, and `data/diagnostics/n_jHmfOgpA0.json`.
+- **Changed:** Added `src/youtube_rag/transcript.py` with strict schema validation, conservative marker/whitespace cleaning, stable source indices, atomic writes, and diagnostics. Added `validate-transcript` CLI support and tests. Created `data/raw/b76rDd9FYeY.json`, `data/processed/b76rDd9FYeY.segments.jsonl`, and `data/diagnostics/b76rDd9FYeY.json`.
 - **Result:** 732 input records; 710 kept; 22 marker-only records dropped; 4,391 input words and 4,338 kept words; cleaned transcript range 24.800–1518.240 seconds; no ordering warnings. The supplied raw file was copied byte-for-byte and remains unchanged.
 - **Tested:** Direct processing smoke check passed, repeated output generation was deterministic, and Python compilation passed. `pytest` and the Typer CLI could not run in the available `.venv` because `pytest` and `typer` are not installed; install project dependencies before rerunning the full suite.
 - **Concepts:** Validation checks structure and values before downstream use; raw inputs are preserved as immutable evidence; cleaning removes only known caption markers and normalizes whitespace; caption windows may overlap; `>>` remains ordinary transcript text, not a speaker label.
@@ -283,12 +283,12 @@ Update this table at the end of each phase.
 - **Input:** `data/raw/b76rDd9FYeY.json`, with Phase 1.1 provenance retained in `b76rDd9FYeY.meta.json`.
 - **Output:** `data/processed/b76rDd9FYeY.segments.jsonl` and `data/diagnostics/b76rDd9FYeY.json`.
 - **Result:** 842 input records; 842 kept; 0 dropped; 5,736 input and kept words; transcript range 0.000–1750.120 seconds; no ordering warnings.
-- **Check:** Processing completed successfully and preserved the fetched raw file as the source input. The original `n_jHmfOgpA0` outputs were left intact.
+- **Check:** Processing completed successfully and preserved the fetched raw file as the source input.
 
 ## Phase 3 completion notes
 
 - **Changed:** Added `youtube_rag.chunking` with a `Chunker` protocol and deterministic `SequentialWordChunker` using 200-word targets, 35-word segment-safe overlap, and a 300-word ceiling. Chunks retain stable IDs, source segment indices, video metadata placeholders, and timestamp ranges. Added the `chunk-transcript` CLI command and unit tests.
-- **Generated:** `data/processed/chunks.jsonl` contains 27 chunks for `n_jHmfOgpA0`; `data/processed/b76rDd9FYeY.chunks.jsonl` contains 35 chunks for `b76rDd9FYeY`. The first transcript's chunks average 196.8 words (maximum 207); the fetched transcript averages 201.3 (maximum 207). Both generated files are covered by the existing `data/processed/` ignore rule.
+- **Generated:** `data/processed/b76rDd9FYeY.chunks.jsonl` contains 35 chunks averaging 201.3 words (maximum 207). The generated file is covered by the existing `data/processed/` ignore rule.
 - **Tested:** `python -m compileall -q src tests` passed; `python -m pytest -q` passed with 12 tests. Repeated chunking produced identical objects and IDs. Workout and fishing terms are represented in the generated chunks.
 - **Concepts:** Chunking groups nearby captions into searchable context windows; overlap repeats a small amount of context so ideas near boundaries are not lost; stable IDs and source segment indices make citations and reruns auditable. Caption timestamps are treated as an ordered timeline, so chunk ends use the maximum included segment end rather than assuming non-overlap.
 - **Assumption/blocker:** The baseline uses conservative sequential word windows and does not claim topic-perfect boundaries. The later 75-second/15-second experiment remains intentionally deferred to the benchmark phase.
@@ -297,10 +297,19 @@ Update this table at the end of each phase.
 ## Phase 4 completion notes
 
 - **Changed:** Added `youtube_rag.embeddings.LocalEmbedder` and persistent `youtube_rag.retrieval.ChromaIndex` with scalar metadata, stable-ID upserts, statistics, model compatibility protection, retrieval results, and timestamp URL generation. Added `index-chunks` and retrieval-only `query` CLI commands.
-- **Tested:** Added retrieval URL/contract tests. Python compilation and the full test suite should be run after installing project dependencies. This environment lacks `sentence-transformers` and `chromadb`, so live model/index/query execution could not be run here.
+- **Tested:** `14` tests passed and Python compilation succeeded. Using the project `.venv`, live indexing stored 35 chunks in ChromaDB. Queries about the removed video's workout and fishing topics correctly returned no relevant passages in this corpus.
 - **Concepts:** Embeddings represent text as vectors so semantic similarity can be ranked; ChromaDB persists vectors and metadata locally; idempotent upsert prevents duplicates; embedding models must remain consistent within an index.
 - **Assumption/blocker:** The configured baseline is `sentence-transformers/all-MiniLM-L6-v2` with cosine distance. Dependency/model installation requires a network-enabled environment; no retrieval result or score was invented.
 - **Next:** Phase 5 adds grounded answers, validated citations, and abstention.
+
+## Phase 5 completion notes
+
+- **Changed:** Added `youtube_rag.answering` with an `Answer` contract containing answer text, validated citations, and an insufficient-evidence flag; added a provider protocol and lazy `OpenAIProvider`; added the `answer` CLI command; and added the OpenAI dependency for configured generation.
+- **Grounding and safety:** Only bounded retrieved excerpts are sent to the provider. Provider-returned citation IDs are checked against the retrieved set, while video IDs, timestamps, excerpts, and URLs are constructed from trusted retrieval metadata. Weak or missing evidence, empty answers, provider abstention, and invented-only citations return `Not found in indexed videos.` Retrieval-only mode remains explicit when no API key is configured.
+- **Tested:** `python -m pytest -q` passed with 18 tests. Tests cover trusted citation construction, invented citation rejection, weak-evidence abstention, and no-key retrieval-only behavior. No live OpenAI call was made and no answer, citation, or model output was invented.
+- **Concepts:** Grounding means restricting an answer to retrieved evidence; source text is treated as untrusted data so prompt-like text cannot become instructions; abstention is an honest refusal when evidence is insufficient; server-side validation prevents model output from creating arbitrary links; speaker wording remains neutral because attribution is not verified.
+- **Assumption/blocker:** The default weak-evidence threshold is cosine distance `0.55`; it is a conservative implementation default and should be evaluated/tuned in Phase 7. Live generation requires `OPENAI_API_KEY` and the OpenAI package, while the retrieval-only path does not require a key.
+- **Next:** Phase 6 adds the Streamlit chat/search experience, evidence cards, and citation playback/fallback links.
 
 ## Phase 1.1 completion notes
 
@@ -313,14 +322,14 @@ Update this table at the end of each phase.
 ## Phase 0 completion notes
 
 - **Product contract:** This is an evidence-backed search assistant about Anthony Mantello's indexed YouTube videos. It is not a creator impersonation, voice clone, generic YouTube chatbot, or claim that the whole channel has been indexed.
-- **Initial corpus:** One user-supplied timestamped transcript for video ID `n_jHmfOgpA0`, corresponding to `https://www.youtube.com/watch?v=n_jHmfOgpA0`.
+- **Initial corpus:** One authorised timestamped transcript for video ID `b76rDd9FYeY`, corresponding to `https://www.youtube.com/watch?v=b76rDd9FYeY`.
 - **Verified transcript facts:** `YoutubeRAG/transcript.json` is a JSON array of 732 records. Every record has exactly `text`, `start`, and `duration`; values are valid; starts are nondecreasing; the covered range is 0.654–1518.240 seconds; the file contains 4,391 whitespace-delimited words and 41 records containing `[music]` (19 marker-only records).
 - **Metadata status:** The channel URL is known from the specification. Official title, publication date, thumbnail, and upload ranking are unknown and must remain unknown until verified. Speaker identity is also unknown; `>>` is not a speaker label.
 - **Input/rights constraint:** Work locally from supplied or otherwise authorised transcript files. Do not silently scrape or invent transcript content, metadata, permissions, retrieval results, or benchmark scores.
 - **Working agreement:** Complete one phase per chat; explain important concepts simply; make the smallest useful increment; run the phase checks; update this document before closing; preserve existing work.
 - **MVP query contract:** A successful supported query retrieves evidence from this indexed transcript, returns a conservative answer about what the video discusses, and exposes a citation built from the real video ID and evidence timestamp. An unsupported query must say it was not found in the indexed material, rather than claim the creator never discussed it. The system must not claim a speaker said something when attribution is uncertain.
 - **Phase 0 check:** Orientation and transcript inspection completed. No application code or generated transcript data was added.
-- **Next prerequisite:** Phase 1 should create the project scaffold and configuration. Phase 2 should then place/use the supplied file as `data/raw/n_jHmfOgpA0.json` without modifying the original input.
+- **Next prerequisite:** The active corpus is already validated and chunked at `data/raw/b76rDd9FYeY.json`; future phases must use this video unless the user explicitly authorises another transcript.
 
 ## Standard phase-chat template
 

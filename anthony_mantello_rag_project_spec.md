@@ -3,7 +3,7 @@
 **Status:** MVP specification and RAG strategy benchmark plan for implementation with Codex  
 **Version:** 1.2 — reference-informed ingestion and reproducible RAG experiments  
 **Target channel:** https://www.youtube.com/@anthonymantello2707  
-**First source video:** https://www.youtube.com/watch?v=n_jHmfOgpA0  
+**First source video:** https://www.youtube.com/watch?v=b76rDd9FYeY  
 **Initial dataset:** 1 provided transcript for end-to-end validation; expand to approximately 10–20 recent long-form videos and maybe full channel later.
 
 > **Instructions for Codex:** Treat this as the source of truth for the intended product. Build incrementally, verify each milestone, and never assume access to transcripts, APIs, secrets, or external services. If a required input is missing, make the interface accept it and document the blocker instead of generating fake content. Prioritize retrieval fidelity and citation correctness over visual polish. Do not convert this into a lecture-search app or a chatbot that impersonates the creator.
@@ -20,7 +20,7 @@ This is **not** a lecture-search tool, a generic YouTube summarizer, or an AI pe
 
 - “What has Anthony said about his workout split?”
 - “Which exercises does he mention in his upper-body session?”
-- “What did Anthony say about his recent fishing trip?”
+- “What did Anthony say about reading books?”
 - “Has he discussed feeling tired before training?”
 - “Which videos mention this topic?”
 - “Does he seem to have changed his approach to training over time?” (Only compare if dated evidence from multiple videos supports it.)
@@ -81,17 +81,17 @@ This is **not** a lecture-search tool, a generic YouTube summarizer, or an AI pe
 
 ## 3. Existing assets and verified facts
 
-An example timestamped transcript was supplied as a `transcript.json` file for:
+An authorised timestamped transcript was supplied as `data/raw/b76rDd9FYeY.json` for:
 
-- **YouTube URL:** `https://www.youtube.com/watch?v=n_jHmfOgpA0`
-- **YouTube video ID:** `n_jHmfOgpA0`
+- **YouTube URL:** `https://www.youtube.com/watch?v=b76rDd9FYeY`
+- **YouTube video ID:** `b76rDd9FYeY`
 - **Channel:** `https://www.youtube.com/@anthonymantello2707`
 - **Format:** JSON array of **732** records; each has exactly `text` (string), `start` (seconds), `duration` (seconds).
 - **Observed transcript range:** starts at **0.654s**; latest segment ends at about **1518.240s (~25:18)**. This is the transcript-covered range, not an independently verified YouTube runtime.
 - **Approximate word count:** **4,391** whitespace-delimited words, including markers.
 - **Noise:** **41** records contain `[music]` somewhere. Some contain mixed spoken words and music markers; remove markers without throwing away accompanying speech.
 - **Timestamps:** `start` values in the provided file are in nondecreasing order, and durations are positive. Some caption windows overlap; do **not** treat the end of one line as necessarily the beginning of the next.
-- **Content examples:** fishing trip, conversational interactions, training session, routine descriptions, and other daily-life topics.
+- **Content examples:** reading, personal change, entrepreneurship, conversational interactions, and routine descriptions.
 - **Important:** Other people speak in the video. Caption markers such as `>>` are **not** reliable speaker labels.
 
 **No verified official video title, publish date, thumbnail, or channel-upload ranking is supplied in this specification.** Populate those from trustworthy video metadata if accessible, or label as unknown; never fabricate them.
@@ -110,13 +110,13 @@ An example timestamped transcript was supplied as a `transcript.json` file for:
 
 The transcript contains a workout explanation near 470 seconds. A clickable link can be built with:
 
-`https://www.youtube.com/watch?v=n_jHmfOgpA0&t=470s`
+`https://www.youtube.com/watch?v=b76rDd9FYeY&t=470s`
 
 **Important:** That is a real URL built from the user's supplied video ID and a timestamp present in the transcript. Citation text must be based on actual retrieved evidence; do not hardcode this as a universal example answer.
 
 ### Local asset handoff
 
-Place the supplied `transcript.json` into `data/raw/n_jHmfOgpA0.json` in the project. If the file is not present when Codex starts, instruct the user to add it. Do not silently replace it with generated example text.
+Use the supplied `data/raw/b76rDd9FYeY.json` as the active transcript. Do not silently replace it with generated example text.
 
 ---
 
@@ -221,12 +221,12 @@ Validation:
 ```json
 [
   {
-    "video_id": "n_jHmfOgpA0",
+    "video_id": "b76rDd9FYeY",
     "channel_url": "https://www.youtube.com/@anthonymantello2707",
-    "url": "https://www.youtube.com/watch?v=n_jHmfOgpA0",
+    "url": "https://www.youtube.com/watch?v=b76rDd9FYeY",
     "title": null,
     "published_at": null,
-    "transcript_path": "data/raw/n_jHmfOgpA0.json",
+    "transcript_path": "data/raw/b76rDd9FYeY.json",
     "transcript_language": "en",
     "transcript_source": "user_provided",
     "rights_note": "Confirm permitted use before sharing transcript-derived data publicly"
@@ -234,7 +234,7 @@ Validation:
 ]
 ```
 
-The fields `title` and `published_at` are intentionally null until verified. A metadata retrieval script may fill them via a permitted provider, or the user can supply them. Use a neutral fallback display name such as `Video n_jHmfOgpA0` when unknown.
+The fields `title` and `published_at` are intentionally null until verified. A metadata retrieval script may fill them via a permitted provider, or the user can supply them. Use a neutral fallback display name such as `Video b76rDd9FYeY` when unknown.
 
 ### 6.3 Processed chunk (`data/processed/chunks.jsonl`)
 
@@ -242,10 +242,10 @@ One JSON object per line, similar to:
 
 ```json
 {
-  "chunk_id": "n_jHmfOgpA0:0007",
-  "video_id": "n_jHmfOgpA0",
+  "chunk_id": "b76rDd9FYeY:0007",
+  "video_id": "b76rDd9FYeY",
   "video_title": null,
-  "video_url": "https://www.youtube.com/watch?v=n_jHmfOgpA0",
+  "video_url": "https://www.youtube.com/watch?v=b76rDd9FYeY",
   "published_at": null,
   "start_sec": 470.56,
   "end_sec": 526.48,
@@ -354,8 +354,8 @@ Use a prompt approximately following these principles:
   "citations": [
     {
       "ref": 1,
-      "chunk_id": "n_jHmfOgpA0:0007",
-      "video_id": "n_jHmfOgpA0",
+      "chunk_id": "b76rDd9FYeY:0007",
+      "video_id": "b76rDd9FYeY",
       "start_sec": 470,
       "excerpt": "Short directly supporting transcript excerpt"
     }
@@ -458,7 +458,7 @@ anthony-mantello-rag/
 ├── data/
 │   ├── videos.json
 │   ├── raw/
-│   │   └── n_jHmfOgpA0.json
+│   │   └── b76rDd9FYeY.json
 │   ├── processed/                # generated; usually ignored in git
 │   └── eval/
 │       └── questions.json
@@ -547,11 +547,11 @@ Per query include fields such as:
 ```json
 {
   "query_id": "workout_upper_c_01",
-  "question": "What exercises are in the Upper C session?",
+  "question": "What motivated Anthony to start reading books?",
   "category": "exact_and_semantic",
   "answerable": true,
   "relevant_evidence": [
-    {"video_id": "n_jHmfOgpA0", "start_sec": 470, "end_sec": 527}
+    {"video_id": "b76rDd9FYeY", "start_sec": 470, "end_sec": 527}
   ],
   "notes": "Review actual clip; approximate transcript evidence window"
 }
@@ -659,11 +659,11 @@ Codex should support equivalent operations, regardless of exact CLI naming:
 
 ```bash
 # Import a user-supplied, timestamped transcript and metadata
-creator-rag ingest --video-id n_jHmfOgpA0 --file data/raw/n_jHmfOgpA0.json
+creator-rag ingest --video-id b76rDd9FYeY --file data/raw/b76rDd9FYeY.json
 # Rebuild chunks and embeddings without re-fetching transcripts
 creator-rag reindex --chunker time-window --chunk-seconds 75 --overlap-seconds 15
 # Ask a question and inspect ranked evidence
-creator-rag ask "What does Anthony say about his Upper C workout?" --strategy dense
+creator-rag ask "What motivated Anthony to start reading books?" --strategy dense
 # Inspect index and run the same labelled evaluation suite
 creator-rag stats
 creator-rag eval --dataset eval/questions.jsonl --strategies bm25,dense,hybrid,rerank
@@ -708,12 +708,12 @@ Build a **working vertical slice** first. Make small commits or clear milestones
 ### Milestone 1 — Process the provided single video
 
 **Deliverables:** Loader/validator, cleaner, timestamp-aware chunker, processed JSONL, diagnostics.  
-**Acceptance:** The supplied `n_jHmfOgpA0` transcript is parsed, marker-only captions filtered, meaningful mixed speech kept, and every chunk has correct source times and metadata. Re-running produces identical output.
+**Acceptance:** The supplied `b76rDd9FYeY` transcript is parsed, marker-only captions filtered, meaningful mixed speech kept, and every chunk has correct source times and metadata. Re-running produces identical output.
 
 ### Milestone 2 — Index and semantic search
 
 **Deliverables:** Local embedding generation, persisted ChromaDB index, simple query command, repeatable upserts.  
-**Acceptance:** Searching for “upper C workout” retrieves a relevant passage around 7:50–8:46 from the example video. Searching “fishing trip” retrieves relevant fishing sections. Results include playable timestamp URLs.
+**Acceptance:** Searching for “reading books” retrieves a relevant passage from the active video. Searching for an unsupported topic abstains. Results include playable timestamp URLs.
 
 ### Milestone 3 — Grounded answering
 
@@ -769,8 +769,8 @@ Build an eval set with expected *relevant windows* confirmed against the transcr
 
 | User question | Expected evidence / behavior |
 |---|---|
-| “What is Anthony’s Upper C workout?” | Retrieves workout explanation near **470–526s**; be cautious on speaker attribution where ambiguous. |
-| “What did they do on the fishing trip?” | Retrieves fishing-trip passages near **100–170s** and/or the later recap near **230–250s**. |
+| “What motivated Anthony to start reading books?” | Retrieves passages about his change in reading habits; be cautious on speaker attribution where ambiguous. |
+| “What is discussed about the active video’s topic?” | Retrieves only evidence present in the indexed transcript and abstains when evidence is insufficient. |
 | “Does the video talk about energy while fishing?” | Retrieves the discussion near **366–390s**. |
 | “Does Anthony discuss [a topic absent from the provided file]?” | Says the topic was not found in indexed material, not that he has never discussed it. |
 | “What does the guest think?” | Avoids assigning words to an identified speaker without verification. |
@@ -844,7 +844,7 @@ A local developer can:
 
 ## 18. Codex kickoff prompt (copy/paste)
 
-> Implement the application described in this specification, including its RAG strategy comparison/benchmark track (Section 13A) and reference-informed engineering safeguards (Section 13B). Start with a single-video local MVP using `data/raw/n_jHmfOgpA0.json` (a timestamped transcript that I will supply) and `https://www.youtube.com/watch?v=n_jHmfOgpA0` as the source. Use Python, Streamlit, a persistent ChromaDB collection, local Sentence Transformers embeddings, and configurable OpenAI generation. Prioritize conservative transcript cleaning, timestamp-aware chunking, working semantic retrieval, grounded answers, and trustworthy citations. Do not fabricate metadata or retrieved text; gracefully handle missing inputs. Do not impersonate the YouTuber or frame the product as lecture search. Implement the milestones sequentially, show me CLI commands and tests, and stop to explain any external permissions/API limitations rather than invent a workaround. After the single-video vertical slice works, support batch-ingesting 10–20 manually supplied transcripts for his latest long-form videos. Keep the architecture modular and provide a clear README. After semantic baseline works, implement BM25, hybrid RRF and (if feasible) reranking with a common strategy interface, a curated timestamp-labelled eval set, repeatable benchmark CLI, honest measured comparisons, and a Streamlit RAG Lab view; do not fabricate improvements or metrics.
+> Implement the application described in this specification, including its RAG strategy comparison/benchmark track (Section 13A) and reference-informed engineering safeguards (Section 13B). Start with a single-video local MVP using `data/raw/b76rDd9FYeY.json` and `https://www.youtube.com/watch?v=b76rDd9FYeY` as the source. Use Python, Streamlit, a persistent ChromaDB collection, local Sentence Transformers embeddings, and configurable OpenAI generation. Prioritize conservative transcript cleaning, timestamp-aware chunking, working semantic retrieval, grounded answers, and trustworthy citations. Do not fabricate metadata or retrieved text; gracefully handle missing inputs. Do not impersonate the YouTuber or frame the product as lecture search. Implement the milestones sequentially, show me CLI commands and tests, and stop to explain any external permissions/API limitations rather than invent a workaround. After the single-video vertical slice works, support batch-ingesting 10–20 manually supplied transcripts for his latest long-form videos. Keep the architecture modular and provide a clear README. After semantic baseline works, implement BM25, hybrid RRF and (if feasible) reranking with a common strategy interface, a curated timestamp-labelled eval set, repeatable benchmark CLI, honest measured comparisons, and a Streamlit RAG Lab view; do not fabricate improvements or metrics.
 
 ---
 
