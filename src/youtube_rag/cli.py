@@ -4,6 +4,7 @@ import typer
 from .config import Settings
 from .transcript import VIDEO_ID, process_transcript
 from .acquisition import CaptionAcquisitionError, fetch_captions
+from .chunking import SequentialWordChunker, load_segments, write_chunks
 app = typer.Typer(help="Local transcript RAG assistant.")
 
 @app.command("fetch-transcript")
@@ -42,5 +43,17 @@ def validate_transcript(source: Path = Path("transcript.json"), video_id: str = 
     typer.echo(f"Validated {diagnostics.input_count} records; kept {diagnostics.kept_count}; dropped {diagnostics.dropped_count}.")
     typer.echo(f"Words: {diagnostics.kept_word_count}; range: {diagnostics.start_sec:.3f}s–{diagnostics.end_sec:.3f}s")
     typer.echo(f"Diagnostics: data/diagnostics/{video_id}.json")
+
+@app.command("chunk-transcript")
+def chunk_transcript(segments: Path = Path("data/processed/segments.jsonl"), video_id: str = VIDEO_ID,
+                     output: Path = Path("data/processed/chunks.jsonl"), target_words: int = 200,
+                     overlap_words: int = 35, max_words: int = 300) -> None:
+    """Build deterministic timestamp-aware word-window chunks."""
+    chunker = SequentialWordChunker(target_words, overlap_words, max_words)
+    chunks, stats = chunker.chunk(load_segments(segments), video_id)
+    write_chunks(output, chunks)
+    typer.echo(f"Chunked {stats.input_segments} segments into {stats.chunk_count} chunks.")
+    typer.echo(f"Words: {stats.word_count}; average: {stats.average_words:.1f}; maximum: {stats.maximum_words}; overlap: {stats.overlap_words}.")
+    typer.echo(f"Chunks: {output}")
 def main() -> None: app()
 

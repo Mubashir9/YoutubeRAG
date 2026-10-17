@@ -253,8 +253,8 @@ Update this table at the end of each phase.
 | 0 | Complete | 2026-10-17 | Confirmed the single supplied transcript, source video ID, local-only scope, unknown metadata, and phase working agreement. | Phase 1: build the Python scaffold and configuration |
 | 1 | Complete | 2026-10-17 | Added installable Python scaffold, environment configuration, starter CLI/UI, tests, README, and safe ignores. No secret is required; retrieval-only mode is explicit. | Phase 1.1: add URL-based caption retrieval for the selected video |
 | 1.1 | Complete | 2026-10-17 | Added safe YouTube URL/ID resolution, caption retrieval, atomic raw JSON and provenance sidecar writes, explicit unavailable/blocked errors, and tests. Live retrieval remains dependent on installing dependencies and network/caption availability. | Phase 3: generate timestamp-aware chunks from the validated transcript |
-| 2 | Complete | 2026-10-17 | Added deterministic validation/cleaning, canonical raw and segment outputs, diagnostics, CLI support, and tests. Environment lacks pytest/typer, so direct smoke checks and compilation passed. | Phase 1.1 acquisition for the new selected video, then Phase 3 |
-| 3 | Planned | — | — | Generate timestamp-aware chunks |
+| 2 | Complete | 2026-10-17 | Re-ran validation for the Phase 1.1 transcript `b76rDd9FYeY`: 842 records kept, no marker-only drops, diagnostics and per-video cleaned segments created. | Phase 3: generate timestamp-aware chunks for both validated transcripts |
+| 3 | Complete | 2026-10-17 | Added deterministic sequential word-window chunking, CLI support, tests, and generated chunks for both validated transcripts. 27 chunks for `n_jHmfOgpA0`; 35 for `b76rDd9FYeY`. | Phase 4: build the persistent embedding index |
 | 4 | Planned | — | — | Build semantic index |
 | 5 | Planned | — | — | Add grounded answers |
 | 6 | Planned | — | — | Build usable UI |
@@ -277,6 +277,22 @@ Update this table at the end of each phase.
 - **Tested:** Direct processing smoke check passed, repeated output generation was deterministic, and Python compilation passed. `pytest` and the Typer CLI could not run in the available `.venv` because `pytest` and `typer` are not installed; install project dependencies before rerunning the full suite.
 - **Concepts:** Validation checks structure and values before downstream use; raw inputs are preserved as immutable evidence; cleaning removes only known caption markers and normalizes whitespace; caption windows may overlap; `>>` remains ordinary transcript text, not a speaker label.
 - **Next:** Phase 3 builds bounded timestamp-aware chunks from the cleaned JSONL.
+
+### Phase 2 re-run for Phase 1.1 transcript
+
+- **Input:** `data/raw/b76rDd9FYeY.json`, with Phase 1.1 provenance retained in `b76rDd9FYeY.meta.json`.
+- **Output:** `data/processed/b76rDd9FYeY.segments.jsonl` and `data/diagnostics/b76rDd9FYeY.json`.
+- **Result:** 842 input records; 842 kept; 0 dropped; 5,736 input and kept words; transcript range 0.000–1750.120 seconds; no ordering warnings.
+- **Check:** Processing completed successfully and preserved the fetched raw file as the source input. The original `n_jHmfOgpA0` outputs were left intact.
+
+## Phase 3 completion notes
+
+- **Changed:** Added `youtube_rag.chunking` with a `Chunker` protocol and deterministic `SequentialWordChunker` using 200-word targets, 35-word segment-safe overlap, and a 300-word ceiling. Chunks retain stable IDs, source segment indices, video metadata placeholders, and timestamp ranges. Added the `chunk-transcript` CLI command and unit tests.
+- **Generated:** `data/processed/chunks.jsonl` contains 27 chunks for `n_jHmfOgpA0`; `data/processed/b76rDd9FYeY.chunks.jsonl` contains 35 chunks for `b76rDd9FYeY`. The first transcript's chunks average 196.8 words (maximum 207); the fetched transcript averages 201.3 (maximum 207). Both generated files are covered by the existing `data/processed/` ignore rule.
+- **Tested:** `python -m compileall -q src tests` passed; `python -m pytest -q` passed with 12 tests. Repeated chunking produced identical objects and IDs. Workout and fishing terms are represented in the generated chunks.
+- **Concepts:** Chunking groups nearby captions into searchable context windows; overlap repeats a small amount of context so ideas near boundaries are not lost; stable IDs and source segment indices make citations and reruns auditable. Caption timestamps are treated as an ordered timeline, so chunk ends use the maximum included segment end rather than assuming non-overlap.
+- **Assumption/blocker:** The baseline uses conservative sequential word windows and does not claim topic-perfect boundaries. The later 75-second/15-second experiment remains intentionally deferred to the benchmark phase.
+- **Next:** Phase 4 builds persistent local embeddings and retrieval from these chunks.
 
 ## Phase 1.1 completion notes
 
