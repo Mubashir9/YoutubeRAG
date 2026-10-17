@@ -52,12 +52,17 @@ def _show_evidence(results: Sequence[RetrievalResult]) -> None:
         st.info("No matching evidence was found in the indexed corpus.")
         return
     for number, result in enumerate(results, 1):
-        with st.container(border=True):
-            st.markdown(f"**{number}. {result.start_sec:.1f}s–{result.end_sec:.1f}s**")
+        play_col, details_col = st.columns([2, 5], vertical_alignment="center")
+        play_col.button(
+            f"Play at {result.play_time:.1f}s",
+            key=f"play-{result.chunk_id}",
+            icon=":material/play_arrow:",
+            on_click=_select_playback,
+            args=(result.chunk_id,),
+        )
+        with details_col.expander(f"Transcript · {result.start_sec:.1f}s–{result.end_sec:.1f}s"):
+            st.caption(f"Result {number} · Chunk {result.chunk_id} · Video {result.video_id}")
             st.write(result.excerpt)
-            st.caption(f"Chunk `{result.chunk_id}` · video `{result.video_id}`")
-            st.button(f"Play at {result.play_time:.1f}s", key=f"play-{result.chunk_id}",
-                      on_click=_select_playback, args=(result.chunk_id,))
             st.link_button("Open cited moment", result.timestamp_url)
 
 
@@ -73,10 +78,18 @@ def _show_playback(results: Sequence[RetrievalResult]) -> None:
                             format_func=lambda chunk_id: next(f"{item.video_id} · {item.play_time:.1f}s" for item in safe if item.chunk_id == chunk_id))
     result = next(item for item in safe if item.chunk_id == selected)
     url = f"https://www.youtube.com/watch?v={result.video_id}"
-    st.video(url, start_time=max(0, int(result.play_time)), autoplay=True, muted=True,
+    st.video(url, start_time=max(0, int(result.play_time)), autoplay=True, muted=True, width=460,
              alt=f"YouTube video {result.video_id}, starting at {int(result.play_time)} seconds")
     st.caption("Playback starts muted; unmute in the player if you want audio.")
     st.link_button("Open on YouTube", result.timestamp_url)
+
+
+def _show_results_layout(results: Sequence[RetrievalResult]) -> None:
+    evidence_col, player_col = st.columns([1.2, 1], gap="large")
+    with evidence_col:
+        _show_evidence(results)
+    with player_col:
+        _show_playback(results)
 
 
 def _show_answer(answer: Answer) -> None:
@@ -91,8 +104,9 @@ def _show_answer(answer: Answer) -> None:
 
 def run() -> None:
     settings = Settings.from_env()
-    st.set_page_config(page_title="Anthony Mantello Creator RAG", page_icon="🔎", layout="wide")
-    st.title("Anthony Mantello Creator RAG")
+    st.set_page_config(page_title="Youtube RAG", page_icon="🔎", layout="wide",
+                       initial_sidebar_state="expanded")
+    st.title("Youtube RAG")
     st.caption("Evidence-backed answers from the locally indexed transcript corpus.")
     st.info("Corpus scope: one supplied transcript (video ID `b76rDd9FYeY`). This app does not represent the whole channel.")
     with st.sidebar:
@@ -134,8 +148,7 @@ def run() -> None:
         st.session_state["last_response"] = (results, answer)
     results, answer = st.session_state["last_response"]
     _show_answer(answer)
-    _show_playback(results)
-    _show_evidence(results)
+    _show_results_layout(results)
 
 
 if __name__ == "__main__":
