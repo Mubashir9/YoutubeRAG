@@ -3,7 +3,20 @@ from pathlib import Path
 import typer
 from .config import Settings
 from .transcript import VIDEO_ID, process_transcript
+from .acquisition import CaptionAcquisitionError, fetch_captions
 app = typer.Typer(help="Local transcript RAG assistant.")
+
+@app.command("fetch-transcript")
+def fetch_transcript(source: str, output_dir: Path = Path("data/raw")) -> None:
+    """Fetch available YouTube captions; never download media or transcribe audio."""
+    try:
+        result = fetch_captions(source, Path.cwd() / output_dir)
+    except CaptionAcquisitionError as exc:
+        typer.echo(f"Caption retrieval failed: {exc}", err=True)
+        raise typer.Exit(code=1)
+    typer.echo(f"Retrieved {result.caption_count} caption records for {result.video_id} ({result.caption_kind or 'unknown'}).")
+    typer.echo(f"Saved: {output_dir / (result.video_id + '.json')}")
+    typer.echo("Next: run validate-transcript with this file to create canonical Phase 2 output.")
 @app.command()
 def status() -> None:
     """Show configuration and scaffold state."""

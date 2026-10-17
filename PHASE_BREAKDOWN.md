@@ -23,7 +23,8 @@ Do not invent transcripts, video metadata, retrieval results, benchmark scores, 
 |---|---|---|
 | 0 | Project orientation and working agreement | None |
 | 1 | Repository scaffold and configuration | 0 |
-| 2 | Transcript validation, cleaning, and diagnostics | 1; supplied transcript |
+| 1.1 | Fetch an available transcript from a YouTube URL | 1; selected video URL |
+| 2 | Transcript validation, cleaning, and diagnostics | 1; local timestamped transcript (supplied or produced by 1.1) |
 | 3 | Timestamp-aware chunking and processed data | 2 |
 | 4 | Embeddings, persistent index, and baseline retrieval | 3 |
 | 5 | Grounded answers, citations, and abstention | 4 |
@@ -67,6 +68,28 @@ The first six phases form the MVP vertical slice. Phase 7 makes it trustworthy a
 **Deliverable:** A fresh environment can install dependencies and start the skeleton UI/CLI with clear missing-input messages.
 
 **Acceptance gate:** Basic tests pass; no secret is required just to inspect or run the scaffold.
+
+## Phase 1.1 — Obtain a transcript from a YouTube URL
+
+**Objective:** Let the user provide a YouTube URL and attempt to obtain its available captions in the timestamped JSON format already accepted by Phase 2.
+
+**Starting test video:** `https://www.youtube.com/watch?v=b76rDd9FYeY` (selected as the first video to develop around).
+
+**Work:**
+
+- Add a CLI workflow that accepts a YouTube URL or video ID and resolves the video ID safely.
+- Use a documented caption access method, and report clearly whether captions were retrieved, unavailable, or blocked.
+- Convert retrieved captions to records with `text`, `start`, and positive `duration`; preserve source text and timing without inventing transcript content.
+- Save the result under `data/raw/{video_id}.json` using atomic writes, then pass it through the existing Phase 2 validator.
+- Keep a local-file import path for transcripts the user already has. Do not download video/audio or silently fall back to transcription.
+
+**Concepts to explain:** YouTube video metadata versus caption access, generated versus uploaded captions, and why a valid transcript must retain timestamps.
+
+**Deliverable:** A repeatable URL-to-validated-transcript CLI workflow, with actionable errors and provenance recorded for the selected video.
+
+**Acceptance gate:** Running against the starting test URL either produces a schema-valid, non-empty timestamped transcript that Phase 2 accepts, or returns a specific, understandable access failure without leaving a partial/corrupt transcript file. A local supplied-transcript path still works.
+
+**Dependency note:** This phase is an optional acquisition path. Phase 2 can proceed directly from a local transcript when one is already supplied; Phase 1.1 is needed to test and automate URL-based caption retrieval.
 
 ## Phase 2 — Validate and clean the supplied transcript
 
@@ -228,8 +251,9 @@ Update this table at the end of each phase.
 | Phase | Status | Date completed | Key result / blocker | Next action |
 |---|---|---|---|---|
 | 0 | Complete | 2026-10-17 | Confirmed the single supplied transcript, source video ID, local-only scope, unknown metadata, and phase working agreement. | Phase 1: build the Python scaffold and configuration |
-| 1 | Complete | 2026-10-17 | Added installable Python scaffold, environment configuration, starter CLI/UI, tests, README, and safe ignores. No secret is required; retrieval-only mode is explicit. | Phase 2: validate supplied transcript |
-| 2 | Complete | 2026-10-17 | Added deterministic validation/cleaning, canonical raw and segment outputs, diagnostics, CLI support, and tests. Environment lacks pytest/typer, so direct smoke checks and compilation passed. | Phase 3: generate timestamp-aware chunks |
+| 1 | Complete | 2026-10-17 | Added installable Python scaffold, environment configuration, starter CLI/UI, tests, README, and safe ignores. No secret is required; retrieval-only mode is explicit. | Phase 1.1: add URL-based caption retrieval for the selected video |
+| 1.1 | Complete | 2026-10-17 | Added safe YouTube URL/ID resolution, caption retrieval, atomic raw JSON and provenance sidecar writes, explicit unavailable/blocked errors, and tests. Live retrieval remains dependent on installing dependencies and network/caption availability. | Phase 3: generate timestamp-aware chunks from the validated transcript |
+| 2 | Complete | 2026-10-17 | Added deterministic validation/cleaning, canonical raw and segment outputs, diagnostics, CLI support, and tests. Environment lacks pytest/typer, so direct smoke checks and compilation passed. | Phase 1.1 acquisition for the new selected video, then Phase 3 |
 | 3 | Planned | — | — | Generate timestamp-aware chunks |
 | 4 | Planned | — | — | Build semantic index |
 | 5 | Planned | — | — | Add grounded answers |
@@ -253,6 +277,14 @@ Update this table at the end of each phase.
 - **Tested:** Direct processing smoke check passed, repeated output generation was deterministic, and Python compilation passed. `pytest` and the Typer CLI could not run in the available `.venv` because `pytest` and `typer` are not installed; install project dependencies before rerunning the full suite.
 - **Concepts:** Validation checks structure and values before downstream use; raw inputs are preserved as immutable evidence; cleaning removes only known caption markers and normalizes whitespace; caption windows may overlap; `>>` remains ordinary transcript text, not a speaker label.
 - **Next:** Phase 3 builds bounded timestamp-aware chunks from the cleaned JSONL.
+
+## Phase 1.1 completion notes
+
+- **Changed:** Added `youtube_rag.acquisition` and the `fetch-transcript` CLI command. It accepts a YouTube URL or bare video ID, fetches available captions through `youtube-transcript-api`, writes `data/raw/{video_id}.json` atomically, and records source URL, count, language, and uploaded/generated status in `{video_id}.meta.json`. It never downloads media or silently transcribes audio.
+- **Tested:** Python compilation and dependency-free URL/ID parsing smoke checks passed. Live caption retrieval remains unverified in this environment because the new dependency/network access is unavailable.
+- **Concepts:** A video URL identifies a video, while caption access is a separate operation that may be unavailable or blocked. Uploaded and generated captions are recorded as provenance. Timestamps are retained for validation, chunking, and citations.
+- **Blocker/assumption:** No transcript content or access result was invented. Caption availability for the selected video must be verified in a network-enabled environment.
+- **Next:** Phase 3 can proceed from the existing validated local transcript; validate the fetched file first when URL retrieval is available.
 
 ## Phase 0 completion notes
 

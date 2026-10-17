@@ -1,0 +1,7 @@
+python-dotenv<2,>=1.0
+streamlit<2,>=1.36
+typer<1,>=0.12
+youtube-transcript-api<2,>=1.2
+
+[dev]
+pytest<9,>=8
