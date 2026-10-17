@@ -1,6 +1,11 @@
 # Youtube RAG
 
-Generation uses `LLM_PROVIDER=groq` by default, or `LLM_PROVIDER=openai`.
-Set `GROQ_API_KEY` and optionally `GROQ_MODEL` (default `openai/gpt-oss-20b`).
-Without the selected key, the CLI and Streamlit app remain in retrieval-only mode.
-Keep keys in `.env` and never commit them.
+## Purpose
+An application that lets you query a Youtube Video and gets you to the relevant timestamp of the video.
+
+## Current Status
+The app does answer questions and ranks top 5 relevant timestamps.
+
+## What am I working on
+- Conducting different Chunking and Retreival Strategies.
+- Expanding the application's scope to provide a better user experience and implementing an automated ingestion and chunking pipeline from the app itself.
