@@ -3,8 +3,8 @@ import streamlit as st
 from .config import Settings
 def run() -> None:
     s = Settings.from_env()
-    st.set_page_config(page_title="Anthony Mantello Creator RAG")
-    st.title("Anthony Mantello Creator RAG")
+    st.set_page_config(page_title="Youtube RAG")
+    st.title("Youtube RAG")
     st.caption("Searches only locally indexed, supplied transcript material.")
     st.info("Scaffold ready. Validation, indexing, and answering arrive in later phases.")
     st.text_input("Question", placeholder="Ask about an indexed video")

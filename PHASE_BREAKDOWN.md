@@ -229,7 +229,7 @@ Update this table at the end of each phase.
 |---|---|---|---|---|
 | 0 | Complete | 2026-10-17 | Confirmed the single supplied transcript, source video ID, local-only scope, unknown metadata, and phase working agreement. | Phase 1: build the Python scaffold and configuration |
 | 1 | Complete | 2026-10-17 | Added installable Python scaffold, environment configuration, starter CLI/UI, tests, README, and safe ignores. No secret is required; retrieval-only mode is explicit. | Phase 2: validate supplied transcript |
-| 2 | Planned | — | — | Validate supplied transcript |
+| 2 | Complete | 2026-10-17 | Added deterministic validation/cleaning, canonical raw and segment outputs, diagnostics, CLI support, and tests. Environment lacks pytest/typer, so direct smoke checks and compilation passed. | Phase 3: generate timestamp-aware chunks |
 | 3 | Planned | — | — | Generate timestamp-aware chunks |
 | 4 | Planned | — | — | Build semantic index |
 | 5 | Planned | — | — | Add grounded answers |
@@ -245,6 +245,14 @@ Update this table at the end of each phase.
 - **Concepts:** Configuration keeps environment-specific values out of code; environment variables keep secrets out of source control; the CLI and UI are separate interfaces over future retrieval services; generation remains optional.
 - **Assumption/blocker:** This phase intentionally has no indexing or retrieval implementation. The supplied raw transcript was not modified.
 - **Next:** Phase 2 validates the supplied transcript and creates canonical processed data.
+
+## Phase 2 completion notes
+
+- **Changed:** Added `src/youtube_rag/transcript.py` with strict schema validation, conservative marker/whitespace cleaning, stable source indices, atomic writes, and diagnostics. Added `validate-transcript` CLI support and tests. Created `data/raw/n_jHmfOgpA0.json`, `data/processed/segments.jsonl`, and `data/diagnostics/n_jHmfOgpA0.json`.
+- **Result:** 732 input records; 710 kept; 22 marker-only records dropped; 4,391 input words and 4,338 kept words; cleaned transcript range 24.800–1518.240 seconds; no ordering warnings. The supplied raw file was copied byte-for-byte and remains unchanged.
+- **Tested:** Direct processing smoke check passed, repeated output generation was deterministic, and Python compilation passed. `pytest` and the Typer CLI could not run in the available `.venv` because `pytest` and `typer` are not installed; install project dependencies before rerunning the full suite.
+- **Concepts:** Validation checks structure and values before downstream use; raw inputs are preserved as immutable evidence; cleaning removes only known caption markers and normalizes whitespace; caption windows may overlap; `>>` remains ordinary transcript text, not a speaker label.
+- **Next:** Phase 3 builds bounded timestamp-aware chunks from the cleaned JSONL.
 
 ## Phase 0 completion notes
 
