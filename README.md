@@ -14,5 +14,16 @@ streamlit run src/youtube_rag/streamlit_app.py
 pytest
 ```
 
+## Phase 4: local semantic retrieval
+
+```powershell
+python -m pip install -e ".[dev]"
+youtube-rag index-chunks --chunks data/processed/chunks.jsonl
+youtube-rag query "upper C workout"
+youtube-rag query "fishing trip"
+```
+
+The persistent index defaults to `data/index` and upserts by stable chunk ID, so reruns do not create duplicates. Retrieval works without an OpenAI key and returns distances, excerpts, source times, and timestamp URLs.
+
 An OpenAI key is optional at this stage. Without one, the application explicitly remains retrieval-only. The supplied `transcript.json` remains unchanged; Phase 2 will validate it and create canonical processed data.
 

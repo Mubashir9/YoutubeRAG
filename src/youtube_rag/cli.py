@@ -1,10 +1,13 @@
 """Command-line interface."""
 from pathlib import Path
+import json
 import typer
 from .config import Settings
 from .transcript import VIDEO_ID, process_transcript
 from .acquisition import CaptionAcquisitionError, fetch_captions
 from .chunking import SequentialWordChunker, load_segments, write_chunks
+from .embeddings import LocalEmbedder
+from .retrieval import ChromaIndex
 app = typer.Typer(help="Local transcript RAG assistant.")
 
 @app.command("fetch-transcript")
@@ -55,5 +58,23 @@ def chunk_transcript(segments: Path = Path("data/processed/segments.jsonl"), vid
     typer.echo(f"Chunked {stats.input_segments} segments into {stats.chunk_count} chunks.")
     typer.echo(f"Words: {stats.word_count}; average: {stats.average_words:.1f}; maximum: {stats.maximum_words}; overlap: {stats.overlap_words}.")
     typer.echo(f"Chunks: {output}")
+
+@app.command("index-chunks")
+def index_chunks(chunks: Path = Path("data/processed/chunks.jsonl")) -> None:
+    """Embed chunks and idempotently persist them in the local vector index."""
+    settings = Settings.from_env()
+    rows = [json.loads(line) for line in chunks.read_text(encoding="utf-8").splitlines() if line.strip()]
+    from .chunking import Chunk
+    index = ChromaIndex(settings.index_dir, LocalEmbedder(settings.embedding_model))
+    count = index.upsert([Chunk(**row) for row in rows])
+    typer.echo(f"Indexed {count} chunks. Statistics: {index.stats()}")
+
+@app.command("query")
+def query(text: str, top_k: int | None = None) -> None:
+    """Retrieve timestamped evidence without requiring an LLM key."""
+    settings = Settings.from_env()
+    results = ChromaIndex(settings.index_dir, LocalEmbedder(settings.embedding_model)).query(text, top_k or settings.top_k)
+    for n, result in enumerate(results, 1):
+        typer.echo(f"{n}. {result.chunk_id} distance={result.score:.4f} {result.timestamp_url}\n   {result.excerpt}")
 def main() -> None: app()
 

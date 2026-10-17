@@ -255,7 +255,7 @@ Update this table at the end of each phase.
 | 1.1 | Complete | 2026-10-17 | Added safe YouTube URL/ID resolution, caption retrieval, atomic raw JSON and provenance sidecar writes, explicit unavailable/blocked errors, and tests. Live retrieval remains dependent on installing dependencies and network/caption availability. | Phase 3: generate timestamp-aware chunks from the validated transcript |
 | 2 | Complete | 2026-10-17 | Re-ran validation for the Phase 1.1 transcript `b76rDd9FYeY`: 842 records kept, no marker-only drops, diagnostics and per-video cleaned segments created. | Phase 3: generate timestamp-aware chunks for both validated transcripts |
 | 3 | Complete | 2026-10-17 | Added deterministic sequential word-window chunking, CLI support, tests, and generated chunks for both validated transcripts. 27 chunks for `n_jHmfOgpA0`; 35 for `b76rDd9FYeY`. | Phase 4: build the persistent embedding index |
-| 4 | Planned | — | — | Build semantic index |
+| 4 | Complete | 2026-10-17 | Added local Sentence Transformers embeddings, persistent ChromaDB index, idempotent upsert/model compatibility checks, retrieval contract, CLI indexing/querying, and timestamp links. Live ML smoke testing requires installing new dependencies. | Phase 5: add grounded answers |
 | 5 | Planned | — | — | Add grounded answers |
 | 6 | Planned | — | — | Build usable UI |
 | 7 | Planned | — | — | Test and harden MVP |
@@ -293,6 +293,14 @@ Update this table at the end of each phase.
 - **Concepts:** Chunking groups nearby captions into searchable context windows; overlap repeats a small amount of context so ideas near boundaries are not lost; stable IDs and source segment indices make citations and reruns auditable. Caption timestamps are treated as an ordered timeline, so chunk ends use the maximum included segment end rather than assuming non-overlap.
 - **Assumption/blocker:** The baseline uses conservative sequential word windows and does not claim topic-perfect boundaries. The later 75-second/15-second experiment remains intentionally deferred to the benchmark phase.
 - **Next:** Phase 4 builds persistent local embeddings and retrieval from these chunks.
+
+## Phase 4 completion notes
+
+- **Changed:** Added `youtube_rag.embeddings.LocalEmbedder` and persistent `youtube_rag.retrieval.ChromaIndex` with scalar metadata, stable-ID upserts, statistics, model compatibility protection, retrieval results, and timestamp URL generation. Added `index-chunks` and retrieval-only `query` CLI commands.
+- **Tested:** Added retrieval URL/contract tests. Python compilation and the full test suite should be run after installing project dependencies. This environment lacks `sentence-transformers` and `chromadb`, so live model/index/query execution could not be run here.
+- **Concepts:** Embeddings represent text as vectors so semantic similarity can be ranked; ChromaDB persists vectors and metadata locally; idempotent upsert prevents duplicates; embedding models must remain consistent within an index.
+- **Assumption/blocker:** The configured baseline is `sentence-transformers/all-MiniLM-L6-v2` with cosine distance. Dependency/model installation requires a network-enabled environment; no retrieval result or score was invented.
+- **Next:** Phase 5 adds grounded answers, validated citations, and abstention.
 
 ## Phase 1.1 completion notes
 
