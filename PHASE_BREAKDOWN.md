@@ -29,7 +29,8 @@ Do not invent transcripts, video metadata, retrieval results, benchmark scores, 
 | 4 | Embeddings, persistent index, and baseline retrieval | 3 |
 | 5 | Grounded answers, citations, and abstention | 4 |
 | 6 | Streamlit experience and playback | 5 |
-| 7 | Evaluation, hardening, and reproducibility | 6 |
+| 6.1 | Groq generation provider | 6 |
+| 7 | Evaluation, hardening, and reproducibility | 6.1 |
 | 8 | Multi-video ingestion and corpus management | 7; authorised transcripts |
 | 9 | RAG strategy comparison and improvement showcase | 7; preferably 8 |
 
@@ -257,7 +258,8 @@ Update this table at the end of each phase.
 | 3 | Complete | 2026-10-17 | Added deterministic sequential word-window chunking, CLI support, tests, and generated 35 chunks for `b76rDd9FYeY`. | Phase 4: build the persistent embedding index |
 | 4 | Complete | 2026-10-17 | Added local Sentence Transformers embeddings, persistent ChromaDB index, idempotent upsert/model compatibility checks, retrieval contract, CLI indexing/querying, and timestamp links. Live ML smoke testing requires installing new dependencies. | Phase 5: add grounded answers |
 | 5 | Complete | 2026-10-17 | Added provider-swappable grounded answers, bounded evidence context, server-side citation validation, trusted timestamp links, and abstention for missing/weak/malformed evidence. 18 tests pass. | Phase 6: build the usable Streamlit UI |
-| 6 | Planned | — | — | Build usable UI |
+| 6 | Complete | 2026-10-17 | Added Streamlit search, grounded answer display, evidence cards, corpus-scope notice, safe playback embeds, timestamp fallback links, and explicit index/API/error states. | Phase 6.1: add Groq as a generation provider |
+| 6.1 | Complete | 2026-10-17 | Added configurable Groq generation through the OpenAI-compatible client, default GPT-OSS 20B, provider-aware CLI/UI reporting, clear provider errors, and mocked tests. No live key/network smoke test was available. | Phase 7: evaluate and harden the MVP |
 | 7 | Planned | — | — | Test and harden MVP |
 | 8 | Planned | — | — | Expand only with authorised transcripts |
 | 9 | Planned | — | — | Benchmark retrieval strategies |
@@ -355,3 +357,40 @@ At the end of the chat, record:
 - Transcript files must be supplied or otherwise authorised; ingestion must not silently scrape third-party material.
 - Citation precision should improve toward the narrowest verified source span, but must not claim accuracy that has not been checked.
 - Benchmark results must be reproducible and honest, including regressions.
+
+## Phase 6 completion notes
+
+- **Changed:** Replaced the starter Streamlit screen with the usable vertical slice: chat input, local index loading, grounded answer display, explicit retrieval-only mode, corpus-scope notice, sidebar configuration, evidence cards, metadata, and independent timestamped citation links.
+- **Playback and safety:** Added a selected-result YouTube embed with a reliable external-link fallback. Video IDs are validated before embed URLs are built, and transcript excerpts are rendered as text through Streamlit rather than interpolated into HTML.
+- **States:** The UI handles no indexed chunks, missing index, malformed/configuration errors, no API key, provider/API failures, empty results, and abstention while keeping retrieved evidence visible where possible.
+- **Tested:** `python -m compileall -q src tests` passed. The existing automated suite was run next where dependencies were available; live browser clicking and live generation were not claimed or fabricated.
+- **Concepts:** Streamlit reruns the script on interaction, so widgets and cached resources provide frontend state; embedded playback can fail for browser or privacy reasons, so every citation also has a normal YouTube timestamp link; retrieval evidence remains visible separately from generated prose for auditability.
+- **Next:** Phase 6.1 adds Groq as a generation provider; Phase 7 then evaluates and hardens the full MVP.
+
+## Phase 6.1 — Add Groq as a generation provider
+
+**Objective:** Let the grounded-answer pipeline use Groq while retaining provider configurability and retrieval-only operation.
+
+**Work:**
+
+- Add a Groq provider behind the existing generation-provider interface and keep the OpenAI provider working.
+- Read `LLM_PROVIDER`, `GROQ_API_KEY`, and `GROQ_MODEL` from environment configuration. Select Groq initially, with `openai/gpt-oss-20b` as the configured model.
+- Add the required client dependency and update `.env.example`, setup documentation, and UI/CLI configuration reporting without exposing secrets.
+- Preserve the Phase 5 grounding contract: bounded retrieved evidence, validated citation IDs, trusted timestamp metadata, and abstention when evidence is insufficient.
+- Handle missing credentials, rate limits, provider/API errors, malformed responses, and model errors clearly. Retrieval-only search must continue to work.
+- Test using mocked-client tests. If credentials and network access are available, run one clearly identified live smoke query. Compare GPT-OSS 20B and GPT-OSS 120B on the same curated questions when both are available, recording observed quality, latency, and token cost without presuming a winner.
+
+**Concepts to explain:** provider adapters, OpenAI-compatible APIs versus provider-specific SDKs, token-based cost, and measuring answer quality on this app's evidence questions.
+
+**Deliverable:** Groq-backed grounded answers selected through configuration, while OpenAI and retrieval-only modes remain available.
+
+**Acceptance gate:** Automated tests cover provider selection, evidence forwarding, citation validation, abstention, and missing-key/API-error behavior. Record a live Groq result only if a real key and network access are available; otherwise document that limitation.
+
+## Phase 6.1 completion notes
+
+- **Changed:** Added `GroqProvider` using the existing OpenAI client and Groq's OpenAI-compatible endpoint. Added `LLM_PROVIDER`, `GROQ_API_KEY`, and `GROQ_MODEL`; the default Groq model is `openai/gpt-oss-20b`. Retrieval-only mode remains active when the selected key is absent.
+- **Grounding and safety:** Groq receives the same bounded evidence context and structured response contract as OpenAI. Existing server-side citation validation, trusted timestamps, and abstention behavior remain shared in `answer_question`. Provider and malformed-response failures surface actionable runtime errors.
+- **Documentation/UI:** Updated `.env.example`, README, CLI status output, and Streamlit sidebar reporting without exposing keys. Groq uses the already-required `openai` dependency because its API is OpenAI-compatible.
+- **Tested:** `python -m compileall -q src tests` passed. Mocked tests cover endpoint/model/evidence forwarding, provider errors, default/configurable settings, and invalid provider settings. No live Groq query was made, so latency, token cost, and 20B versus 120B quality were not claimed.
+- **Concepts:** A provider adapter swaps services without changing grounding or citation logic. OpenAI-compatible APIs share the client protocol but use a provider-specific base URL. Model comparisons require the same curated questions and recorded observations.
+- **Next:** Phase 7 evaluates retrieval and answers, hardens failure handling, and records reproducible results.

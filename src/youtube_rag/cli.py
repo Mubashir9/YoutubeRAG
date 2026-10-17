@@ -8,7 +8,7 @@ from .acquisition import CaptionAcquisitionError, fetch_captions
 from .chunking import SequentialWordChunker, load_segments, write_chunks
 from .embeddings import LocalEmbedder
 from .retrieval import ChromaIndex
-from .answering import OpenAIProvider, answer_question
+from .answering import GroqProvider, OpenAIProvider, answer_question
 app = typer.Typer(help="Local transcript RAG assistant.")
 
 @app.command("fetch-transcript")
@@ -26,12 +26,13 @@ def fetch_transcript(source: str, output_dir: Path = Path("data/raw")) -> None:
 def status() -> None:
     """Show configuration and scaffold state."""
     s = Settings.from_env()
-    typer.echo("Anthony Mantello Creator RAG — scaffold ready")
+    typer.echo("Anthony Mantello Creator RAG — local UI and retrieval ready")
     typer.echo(f"Embedding model: {s.embedding_model}")
     typer.echo(f"Index directory: {s.index_dir}")
     typer.echo(f"Top-k: {s.top_k}")
-    typer.echo(f"Generation: {'configured' if s.openai_api_key else 'retrieval-only (no API key)'}")
-    typer.echo("Indexing and querying arrive in later phases.")
+    configured = s.groq_api_key if s.llm_provider == "groq" else s.openai_api_key
+    typer.echo(f"Generation: {s.llm_provider} ({s.groq_model if s.llm_provider == 'groq' else s.openai_model})" if configured else "Generation: retrieval-only (no API key)")
+    typer.echo("Run `streamlit run src/youtube_rag/streamlit_app.py` to open the UI.")
 
 @app.command("validate-transcript")
 def validate_transcript(source: Path = Path("data/raw/b76rDd9FYeY.json"), video_id: str = VIDEO_ID) -> None:
@@ -83,7 +84,8 @@ def answer(text: str, top_k: int | None = None) -> None:
     """Answer from retrieved evidence, or abstain when evidence is insufficient."""
     settings = Settings.from_env()
     results = ChromaIndex(settings.index_dir, LocalEmbedder(settings.embedding_model)).query(text, top_k or settings.top_k)
-    provider = OpenAIProvider(settings.openai_api_key, settings.openai_model) if settings.openai_api_key else None
+    provider = (GroqProvider(settings.groq_api_key, settings.groq_model) if settings.llm_provider == "groq" and settings.groq_api_key
+                else OpenAIProvider(settings.openai_api_key, settings.openai_model) if settings.llm_provider == "openai" and settings.openai_api_key else None)
     result = answer_question(text, results, provider)
     typer.echo(result.text)
     typer.echo(f"Insufficient evidence: {result.insufficient_evidence}")

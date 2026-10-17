@@ -43,14 +43,37 @@ class OpenAIProvider:
         self.api_key, self.model = api_key, model
 
     def generate(self, question: str, evidence: Sequence[RetrievalResult]) -> DraftAnswer:
-        try:
-            from openai import OpenAI
-        except ImportError as exc:
-            raise RuntimeError("Install the OpenAI extra to generate answers: pip install 'openai>=1.0'") from exc
+        client = _client(self.api_key, self.model)
+        return _generate_with_client(client, self.model, question, evidence)
+
+
+class GroqProvider:
+    """Groq provider using its OpenAI-compatible chat-completions API."""
+
+    def __init__(self, api_key: str, model: str = "openai/gpt-oss-20b") -> None:
+        self.api_key, self.model = api_key, model
+
+    def generate(self, question: str, evidence: Sequence[RetrievalResult]) -> DraftAnswer:
+        client = _client(self.api_key, self.model, base_url="https://api.groq.com/openai/v1")
+        return _generate_with_client(client, self.model, question, evidence)
+
+
+def _client(api_key: str, model: str, base_url: str | None = None):
+    try:
+        from openai import OpenAI
+    except ImportError as exc:
+        raise RuntimeError("Install the generation dependency: pip install 'openai>=1.0'") from exc
+    try:
+        return OpenAI(api_key=api_key, **({"base_url": base_url} if base_url else {}))
+    except Exception as exc:
+        raise RuntimeError(f"Could not initialize the generation provider for model {model}: {exc}") from exc
+
+
+def _generate_with_client(client, model: str, question: str, evidence: Sequence[RetrievalResult]) -> DraftAnswer:
         context = _context(evidence)
-        client = OpenAI(api_key=self.api_key)
-        response = client.chat.completions.create(
-            model=self.model,
+        try:
+            response = client.chat.completions.create(
+            model=model,
             temperature=0,
             response_format={"type": "json_object"},
             messages=[
@@ -62,11 +85,16 @@ class OpenAIProvider:
                 )},
                 {"role": "user", "content": f"Question: {question}\n\nEvidence:\n{context}"},
             ],
-        )
+            )
+        except Exception as exc:
+            raise RuntimeError(f"Generation provider request failed: {exc}") from exc
         try:
             data = json.loads(response.choices[0].message.content or "{}")
-            return DraftAnswer(str(data.get("text", "")), tuple(str(x) for x in data.get("citation_ids", [])), bool(data.get("insufficient_evidence", False)))
-        except (ValueError, TypeError, KeyError) as exc:
+            citation_ids = data.get("citation_ids", [])
+            if not isinstance(citation_ids, list):
+                raise TypeError("citation_ids must be a list")
+            return DraftAnswer(str(data.get("text", "")), tuple(str(x) for x in citation_ids), bool(data.get("insufficient_evidence", False)))
+        except (ValueError, TypeError, KeyError, AttributeError, IndexError) as exc:
             raise RuntimeError("The answer provider returned malformed JSON.") from exc
 
 
