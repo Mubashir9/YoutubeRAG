@@ -3,6 +3,10 @@
 ## Purpose
 An application that lets you query a Youtube Video and gets you to the relevant timestamp of the video.
 
+## Architecture
+
+![Youtube RAG Architecture](assets/architecture.png)
+
 ## Current Status
 The app does answer questions and ranks top 5 relevant timestamps.
 
