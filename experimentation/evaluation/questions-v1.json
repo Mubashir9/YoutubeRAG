@@ -1,0 +1,930 @@
+{
+  "dataset_id": "DPqiIzK97K0-retrieval-eval-v1",
+  "version": "1.0.0",
+  "created_date": "2026-10-19",
+  "video_id": "DPqiIzK97K0",
+  "corpus_raw_sha256": "9e3275e1fec88de4fb0440e51e53c6951cb85cd5b6bb7eb205cfde345dfd9952",
+  "validated_segments_sha256": "5f02ff99f83854213c547d373a967d9bee4a718ac97de1c70cfb3f84c3a47e76",
+  "label_unit": "original caption segment_index (not generated chunk IDs)",
+  "questions": [
+    {
+      "id": "q01",
+      "question": "Which alternative kit does Matthew recommend for students located outside the United States who cannot purchase an Inland starter kit?",
+      "answerability": "answerable",
+      "reference_answer": "The Elegoo Uno Super Starter Kit, purchased along with a separate LED matrix component.",
+      "evidence_spans": [
+        {
+          "start_sec": 120.0,
+          "end_sec": 135.0,
+          "source_segment_ids": [
+            50,
+            51,
+            52,
+            53,
+            54,
+            55,
+            56
+          ],
+          "transcript_excerpt": "if you're outside of the US you can get yourself an elgo UNO super stared kit okay you're going to get yourself an e Lego Superstar kit with an LED Matrix so this kit does not have an LED a component named LED Matrix"
+        }
+      ],
+      "ambiguity_note": null
+    },
+    {
+      "id": "q02",
+      "question": "Are terminal rows a through e connected across the center divider to rows f through j on a standard breadboard?",
+      "answerability": "answerable",
+      "reference_answer": "No, rows a through e are electrically separated from rows f through j by the central divider gap.",
+      "evidence_spans": [
+        {
+          "start_sec": 461.0,
+          "end_sec": 478.0,
+          "source_segment_ids": [
+            185,
+            186,
+            187,
+            188,
+            189,
+            190,
+            191,
+            192
+          ],
+          "transcript_excerpt": "e and f are not connected okay there's a gap between them as you can see right here there's a big gap between E and F so one thing is e and f are not connected okay so a up to e are connected on their own but a up to e are not connected to f up to J"
+        }
+      ],
+      "ambiguity_note": null
+    },
+    {
+      "id": "q03",
+      "question": "According to the instructor's calculations with Ohm's law, what is the recommended operating current range for an LED to prevent damage?",
+      "answerability": "answerable",
+      "reference_answer": "10 to 15 milliamps (with 20 milliamps being the absolute maximum limit).",
+      "evidence_spans": [
+        {
+          "start_sec": 870.0,
+          "end_sec": 898.0,
+          "source_segment_ids": [
+            342,
+            343,
+            344,
+            345,
+            346,
+            347,
+            348,
+            349,
+            350,
+            351,
+            352,
+            353
+          ],
+          "transcript_excerpt": "when it comes LEDs they have a maximum limit of 20 milliamps so if we go over 20 milliamps what's going to basically happen is we're going to fry our LED... 20 milliamps is the maximum the recommended one is 10 to 15 milliamps"
+        }
+      ],
+      "ambiguity_note": null
+    },
+    {
+      "id": "q04",
+      "question": "What proportion of electrical energy in traditional incandescent light bulbs is converted into heat rather than light?",
+      "answerability": "answerable",
+      "reference_answer": "95% of the electrical energy is converted into heat, leaving only 5% emitted as light.",
+      "evidence_spans": [
+        {
+          "start_sec": 1355.0,
+          "end_sec": 1372.0,
+          "source_segment_ids": [
+            506,
+            507,
+            508,
+            509,
+            510,
+            511,
+            512,
+            513,
+            514
+          ],
+          "transcript_excerpt": "light bulbs are not light generating devices they are heat generating devices because the electrical energy that we're going to input the current is going to be is going to go towards heat 95% of it is going to go towards heat while only 5% of it goes towards light"
+        }
+      ],
+      "ambiguity_note": null
+    },
+    {
+      "id": "q05",
+      "question": "Why does an N-type semiconductor acquire a net negative charge during doping?",
+      "answerability": "answerable",
+      "reference_answer": "It is doped with an impurity atom possessing five valence electrons, resulting in a total of nine electrons around the atom and creating an excess free electron that can move.",
+      "evidence_spans": [
+        {
+          "start_sec": 1600.0,
+          "end_sec": 1644.0,
+          "source_segment_ids": [
+            598,
+            599,
+            600,
+            601,
+            602,
+            603,
+            604,
+            605,
+            606,
+            607,
+            608,
+            609,
+            610,
+            611,
+            612,
+            613,
+            614,
+            615
+          ],
+          "transcript_excerpt": "we're going to replace it with an atom that has five valance electrons... instead of eight we're going to have nine electrons... in this case it is negatively charged because it has excess amount of electrons right here and it wants to give those electrons so it's negatively charged that's why it's called the N Type"
+        }
+      ],
+      "ambiguity_note": null
+    },
+    {
+      "id": "q06",
+      "question": "How do void setup() and void loop() differ in how frequently their contained code executes?",
+      "answerability": "answerable",
+      "reference_answer": "void setup() executes only once when the sketch starts, while void loop() runs continuously and repeatedly.",
+      "evidence_spans": [
+        {
+          "start_sec": 2783.0,
+          "end_sec": 2810.0,
+          "source_segment_ids": [
+            1075,
+            1076,
+            1077,
+            1078,
+            1079,
+            1080,
+            1081,
+            1082,
+            1083,
+            1084,
+            1085,
+            1086,
+            1087
+          ],
+          "transcript_excerpt": "what is aoid setup this is where we actually put our setup code okay and it's going to run once importantly it's going to run once... when it comes to loop we're going to put most of our code and our main code right here and we're going to run it repeatedly"
+        }
+      ],
+      "ambiguity_note": null
+    },
+    {
+      "id": "q07",
+      "question": "In the traffic light circuit implementation, which digital pins are connected to the green, yellow, and red LEDs?",
+      "answerability": "answerable",
+      "reference_answer": "Green is wired to digital pin 7, yellow to digital pin 4, and red to digital pin 9.",
+      "evidence_spans": [
+        {
+          "start_sec": 3434.0,
+          "end_sec": 3450.0,
+          "source_segment_ids": [
+            1342,
+            1343,
+            1344,
+            1345,
+            1346,
+            1347,
+            1348,
+            1349
+          ],
+          "transcript_excerpt": "green LED is connected to what to pin to digital pin 7 okay so it's connected to what the digital pin 7 the same goes for yellow it's connected to digital pin 4 while the red is connected to their pin 9"
+        }
+      ],
+      "ambiguity_note": null
+    },
+    {
+      "id": "q08",
+      "question": "How can a user visually identify PWM-capable digital pins on an Arduino Nano compared to an Arduino Uno?",
+      "answerability": "answerable",
+      "reference_answer": "On an Arduino Nano, PWM pins are designated by a printed dot, whereas on an Arduino Uno, they are marked with a squiggly tilde symbol.",
+      "evidence_spans": [
+        {
+          "start_sec": 5116.0,
+          "end_sec": 5140.0,
+          "source_segment_ids": [
+            1990,
+            1991,
+            1992,
+            1993,
+            1994,
+            1995,
+            1996,
+            1997,
+            1998,
+            1999,
+            2000
+          ],
+          "transcript_excerpt": "when you're using U um Arduino Nano the board that I'm currently using is an Arduino Nano we use we have is what dots that Mark this unique digal pins... but when you use an Arduino Uno we have a quickly sign"
+        }
+      ],
+      "ambiguity_note": null
+    },
+    {
+      "id": "q09",
+      "question": "Why does the Arduino's 10-bit analogRead() return a maximum integer reading of 1023 rather than 1024 for a 5-volt input?",
+      "answerability": "answerable",
+      "reference_answer": "A 10-bit ADC provides 1024 total discrete values, but because zero-indexed numbering begins at 0, the maximum possible value is 1023.",
+      "evidence_spans": [
+        {
+          "start_sec": 6789.0,
+          "end_sec": 6835.0,
+          "source_segment_ids": [
+            2633,
+            2634,
+            2635,
+            2636,
+            2637,
+            2638,
+            2639,
+            2640,
+            2641,
+            2642,
+            2643,
+            2644,
+            2645,
+            2646,
+            2647,
+            2648,
+            2649,
+            2650,
+            2651,
+            2652,
+            2653,
+            2654
+          ],
+          "transcript_excerpt": "this is 10 bits... can count to what up to 1024 okay to the power of 10 that's why we keep receiving 1023 why do we keep receiving 1023 we're receiving 5 volt right here... why did we say 1023 instead of 1024 because we start counting from what from zero"
+        }
+      ],
+      "ambiguity_note": null
+    },
+    {
+      "id": "q10",
+      "question": "What is the clock frequency in megahertz of the microcontroller on Matthew's Arduino Nano?",
+      "answerability": "unanswerable",
+      "reference_answer": null,
+      "evidence_spans": [],
+      "ambiguity_note": "The video identifies the board as an Arduino Nano and demonstrates uploading code, but it never mentions the microcontroller's clock speed or crystal oscillator rating (e.g., 16 MHz)."
+    },
+    {
+      "id": "q11",
+      "question": "Which of the three potentiometer terminals provides the variable output voltage (Vout)?",
+      "answerability": "answerable",
+      "reference_answer": "The middle terminal connects to Vout to output the adjustable voltage.",
+      "evidence_spans": [
+        {
+          "start_sec": 7320.0,
+          "end_sec": 7338.0,
+          "source_segment_ids": [
+            2844,
+            2845,
+            2846,
+            2847,
+            2848,
+            2849,
+            2850,
+            2851,
+            2852
+          ],
+          "transcript_excerpt": "the first one and the last one they're connected to what to R1 and R2 and the middle one is connected to what the middle one is connected to V out this is going to be the voltage out"
+        }
+      ],
+      "ambiguity_note": null
+    },
+    {
+      "id": "q12",
+      "question": "How can one visually distinguish an active buzzer from a passive buzzer by looking at their bottom side?",
+      "answerability": "answerable",
+      "reference_answer": "An active buzzer has a sealed black base, while a passive buzzer has an exposed circuit board where internal components are visible.",
+      "evidence_spans": [
+        {
+          "start_sec": 8045.0,
+          "end_sec": 8080.0,
+          "source_segment_ids": [
+            3144,
+            3145,
+            3146,
+            3147,
+            3148,
+            3149,
+            3150,
+            3151,
+            3152,
+            3153,
+            3154,
+            3155,
+            3156,
+            3157
+          ],
+          "transcript_excerpt": "the one mark with a black one is a what it's called an active buzzer okay an active buzzer and the one that does not have any board any U bottom on it and where you can see the uh where you can see the components right here is what is called a passive buzzer"
+        }
+      ],
+      "ambiguity_note": null
+    },
+    {
+      "id": "q13",
+      "question": "Is the green bead thermistor from the instructor's kit an NTC or a PTC thermistor?",
+      "answerability": "ambiguous",
+      "reference_answer": null,
+      "evidence_spans": [
+        {
+          "start_sec": 11410.0,
+          "end_sec": 11475.0,
+          "source_segment_ids": [
+            4416,
+            4417,
+            4418,
+            4419,
+            4420,
+            4421,
+            4422,
+            4423,
+            4424,
+            4425,
+            4426,
+            4427,
+            4428,
+            4429,
+            4430,
+            4431,
+            4432,
+            4433,
+            4434
+          ],
+          "transcript_excerpt": "when it comes towards the thermister there's something called ntc's and ptcs and n stands for negative... so it depends on what it depends on the on the therm we have here it can be NTC or it can be PTC"
+        },
+        {
+          "start_sec": 11655.0,
+          "end_sec": 11735.0,
+          "source_segment_ids": [
+            4505,
+            4506,
+            4507,
+            4508,
+            4509,
+            4510,
+            4511,
+            4512,
+            4513,
+            4514,
+            4515,
+            4516,
+            4517,
+            4518,
+            4519,
+            4520,
+            4521,
+            4522,
+            4523,
+            4524,
+            4525,
+            4526,
+            4527,
+            4528,
+            4529,
+            4530,
+            4531,
+            4532,
+            4533,
+            4534
+          ],
+          "transcript_excerpt": "I want to do is just get it close here so we can see if the uh if this one changes or not if the LED changes or not... do you see a difference I can't... barely even see any difference... this thermost does not change very easily why is that so this one specifically again check your label specifically this one has 10,000s"
+        }
+      ],
+      "ambiguity_note": "The instructor outlines the theoretical distinction between NTC and PTC thermistors, but when testing his 10k ohm component with a desk lamp, the LED exhibits no observable change in brightness. Because he declines to test it with higher heat like an open flame, the video leaves it unresolved whether his specific part is NTC or PTC."
+    },
+    {
+      "id": "q14",
+      "question": "What is the scale factor of the LM35 temperature sensor as stated in its datasheet?",
+      "answerability": "answerable",
+      "reference_answer": "10 millivolts per degree Celsius (0.01 volts per degree Celsius).",
+      "evidence_spans": [
+        {
+          "start_sec": 12485.0,
+          "end_sec": 12518.0,
+          "source_segment_ids": [
+            4818,
+            4819,
+            4820,
+            4821,
+            4822,
+            4823,
+            4824,
+            4825,
+            4826,
+            4827,
+            4828,
+            4829,
+            4830,
+            4831
+          ],
+          "transcript_excerpt": "this one it says linear plus 10 m per de C scale factor so what does it mean it's saying that that the scale factor basically is what it's going to what it's going to Output 10 m per every degree celsius"
+        }
+      ],
+      "ambiguity_note": null
+    },
+    {
+      "id": "q15",
+      "question": "What exact mathematical expression does the instructor use in C++ to compute Fahrenheit from Celsius?",
+      "answerability": "answerable",
+      "reference_answer": "Multiplying Celsius by 9.0/5.0 and adding 32: (temp * (9.0 / 5.0)) + 32.",
+      "evidence_spans": [
+        {
+          "start_sec": 13080.0,
+          "end_sec": 13170.0,
+          "source_segment_ids": [
+            5052,
+            5053,
+            5054,
+            5055,
+            5056,
+            5057,
+            5058,
+            5059,
+            5060,
+            5061,
+            5062,
+            5063,
+            5064,
+            5065,
+            5066,
+            5067,
+            5068,
+            5069,
+            5070,
+            5071,
+            5072,
+            5073,
+            5074,
+            5075,
+            5076,
+            5077,
+            5078,
+            5079,
+            5080,
+            5081,
+            5082,
+            5083,
+            5084,
+            5085,
+            5086,
+            5087,
+            5088
+          ],
+          "transcript_excerpt": "it's what temperature in degrees celsus time 9 over5... temperature and degree Su just given by EMP right here then we're going to multiply by what by N9 again we need to put what because we're dividing what do we need to do we always need to use a Point 9.0... and then we're going to add it up by what by 32"
+        }
+      ],
+      "ambiguity_note": null
+    },
+    {
+      "id": "q16",
+      "question": "Why does the instructor recommend reading a DHT temperature sensor via a digital pin rather than an analog pin?",
+      "answerability": "answerable",
+      "reference_answer": "The DHT sensor transmits single-bit digital pulses (0s and 1s); reading it through a 10-bit analog pin transfers unnecessary data and is slower.",
+      "evidence_spans": [
+        {
+          "start_sec": 14810.0,
+          "end_sec": 14860.0,
+          "source_segment_ids": [
+            5807,
+            5808,
+            5809,
+            5810,
+            5811,
+            5812,
+            5813,
+            5814,
+            5815,
+            5816,
+            5817,
+            5818,
+            5819,
+            5820,
+            5821,
+            5822,
+            5823,
+            5824,
+            5825,
+            5826,
+            5827,
+            5828,
+            5829,
+            5830,
+            5831,
+            5832
+          ],
+          "transcript_excerpt": "the problem with analog read is it transfers 10 bit okay it transfers 10 bit and it's going to be what it's going to be slower when it when it's compared to the what to the this read that's why it's preferred to what to use digital digital pins when it comes to this again dstd sensors"
+        }
+      ],
+      "ambiguity_note": null
+    },
+    {
+      "id": "q17",
+      "question": "Does pressing a 4-pin momentary push button establish an electrical connection only between pins on the same side or also across diagonally opposite pins?",
+      "answerability": "answerable",
+      "reference_answer": "The same-side pin pairs are permanently connected internally. Pressing the button connects the opposite sides too, so a diagonal pair can conduct through the switch when pressed.",
+      "evidence_spans": [
+        {
+          "start_sec": 15285.0,
+          "end_sec": 15320.0,
+          "source_segment_ids": [
+            6012,
+            6013,
+            6014,
+            6015,
+            6016,
+            6017,
+            6018,
+            6019,
+            6020,
+            6021,
+            6022,
+            6023,
+            6024,
+            6025,
+            6026,
+            6027,
+            6028
+          ],
+          "transcript_excerpt": "the ones that are attached to what the same side when it comes to those pins what happens is there are what there are I'm just going to put this here there is a wire okay so there's a wire that's going to move it's a wire that is what that moves okay so right here when you push down... these attach basically when they attach what happens current What flows"
+        },
+        {
+          "start_sec": 16000.0,
+          "end_sec": 16060.0,
+          "source_segment_ids": [
+            6312,
+            6313,
+            6314,
+            6315,
+            6316,
+            6317,
+            6318,
+            6319,
+            6320,
+            6321,
+            6322,
+            6323,
+            6324,
+            6325,
+            6326,
+            6327,
+            6328,
+            6329,
+            6330,
+            6331,
+            6332,
+            6333,
+            6334,
+            6335,
+            6336,
+            6337,
+            6338,
+            6339,
+            6340
+          ],
+          "transcript_excerpt": "I'm going to put this this at this third leg right now they're not parallel they're more of diagonal... you might be wondering why is this working as a switch we just said that you know the ones that are on the same side are the only ones that work as a what the where the switching occurs so you might be wondering what is going on well the simple answer is what as I said again these the first one and the second one... are always connected... and then when you switch down this and this become connected so indirectly what happens this and the resistor... become with indirectly connected"
+        }
+      ],
+      "ambiguity_note": null
+    },
+    {
+      "id": "q18",
+      "question": "What is the milliamp-hour (mAh) capacity rating of the 1.5-volt battery Matthew uses in section 5?",
+      "answerability": "unanswerable",
+      "reference_answer": null,
+      "evidence_spans": [],
+      "ambiguity_note": "The instructor shows a household 1.5V battery from a remote control to demonstrate powering an LED dimly, but he never states its capacity rating, chemistry, or milliamp-hour specifications."
+    },
+    {
+      "id": "q19",
+      "question": "On the 4-legged RGB LED used in the course, which pin is the common ground cathode, and how can it be physically identified?",
+      "answerability": "answerable",
+      "reference_answer": "It is the third pin (counting from the leftmost blue pin), and it is physically longer than the other three pins.",
+      "evidence_spans": [
+        {
+          "start_sec": 16710.0,
+          "end_sec": 16745.0,
+          "source_segment_ids": [
+            6614,
+            6615,
+            6616,
+            6617,
+            6618,
+            6619,
+            6620,
+            6621,
+            6622,
+            6623,
+            6624,
+            6625,
+            6626,
+            6627,
+            6628,
+            6629,
+            6630
+          ],
+          "transcript_excerpt": "the third leg is always longer than the three legs... the most left leg basically the first one is what it's going to be blue okay and the second one is going to be green the third one is going to be connected to the gnd D pen and the fourth one is going to be connected to what it's basically the red light"
+        }
+      ],
+      "ambiguity_note": null
+    },
+    {
+      "id": "q20",
+      "question": "Why did checking if (set_color == \"red\") initially fail in Arduino IDE 2.x until an escape character was added?",
+      "answerability": "answerable",
+      "reference_answer": "Serial.readString() captured a hidden newline character (\\n) along with the text, making the incoming string \"red\\n\" instead of \"red\".",
+      "evidence_spans": [
+        {
+          "start_sec": 21870.0,
+          "end_sec": 21945.0,
+          "source_segment_ids": [
+            8789,
+            8790,
+            8791,
+            8792,
+            8793,
+            8794,
+            8795,
+            8796,
+            8797,
+            8798,
+            8799,
+            8800,
+            8801,
+            8802,
+            8803,
+            8804,
+            8805,
+            8806,
+            8807,
+            8808,
+            8809,
+            8810,
+            8811,
+            8812,
+            8813,
+            8814,
+            8815,
+            8816,
+            8817,
+            8818,
+            8819,
+            8820,
+            8821
+          ],
+          "transcript_excerpt": "there's no space right here but it pushes this to a new line so what does this mean this means that what we're having a red that is attached to a new line... you represent it with a backslash and an N okay n stands for what for new line"
+        }
+      ],
+      "ambiguity_note": null
+    },
+    {
+      "id": "q21",
+      "question": "What is the part number of the single-digit 7-segment LED display used in Matthew's demonstration?",
+      "answerability": "answerable",
+      "reference_answer": "5611AS (a common cathode single-digit display).",
+      "evidence_spans": [
+        {
+          "start_sec": 22460.0,
+          "end_sec": 22500.0,
+          "source_segment_ids": [
+            9021,
+            9022,
+            9023,
+            9024,
+            9025,
+            9026,
+            9027,
+            9028,
+            9029,
+            9030,
+            9031,
+            9032,
+            9033,
+            9034,
+            9035,
+            9036
+          ],
+          "transcript_excerpt": "Google the name right here say right now mine is 5611 as okay you have to go to my let me just go over to my screen right now so before running anything first thing we need to do is Google 5611 as again my number seven segment display data sheet"
+        }
+      ],
+      "ambiguity_note": null
+    },
+    {
+      "id": "q22",
+      "question": "How many total physical pins does a 4-digit 7-segment display have compared to the count required if each digit were wired independently?",
+      "answerability": "answerable",
+      "reference_answer": "It has 12 physical pins (4 common digit pins and 8 segment pins), compared to 34 pins if each of the 4 digits were wired independently.",
+      "evidence_spans": [
+        {
+          "start_sec": 27290.0,
+          "end_sec": 27335.0,
+          "source_segment_ids": [
+            10863,
+            10864,
+            10865,
+            10866,
+            10867,
+            10868,
+            10869,
+            10870,
+            10871,
+            10872,
+            10873,
+            10874,
+            10875,
+            10876,
+            10877,
+            10878,
+            10879,
+            10880,
+            10881,
+            10882,
+            10883
+          ],
+          "transcript_excerpt": "when you look at the four digit 7even segment LED display is that it only has as you can see right here it has six pins right here has six pins so totally it has only 12 pins... we were expecting 8 * 4 which is going to be 32 and then we expected two common pins which is going to add it up to a total of what 34"
+        }
+      ],
+      "ambiguity_note": null
+    },
+    {
+      "id": "q23",
+      "question": "Why did Matthew use Serial.parseInt() rather than Serial.readString() when reading the timer countdown value from the Serial Monitor?",
+      "answerability": "answerable",
+      "reference_answer": "The SevSeg library's setNumber() method expects a numerical integer data type; passing a text string causes errors.",
+      "evidence_spans": [
+        {
+          "start_sec": 32200.0,
+          "end_sec": 32260.0,
+          "source_segment_ids": [
+            13060,
+            13061,
+            13062,
+            13063,
+            13064,
+            13065,
+            13066,
+            13067,
+            13068,
+            13069,
+            13070,
+            13071,
+            13072,
+            13073,
+            13074,
+            13075,
+            13076,
+            13077,
+            13078,
+            13079,
+            13080,
+            13081,
+            13082,
+            13083,
+            13084,
+            13085,
+            13086,
+            13087,
+            13088,
+            13089,
+            13090,
+            13091
+          ],
+          "transcript_excerpt": "we're going to be using something called set number from what from our seeg library... we expect to what we're going to be setting a number right here... how we're going to tell it that we're going to be giving it numbers is literally using parse int... I want you to store it in the variable as a what as an integer"
+        }
+      ],
+      "ambiguity_note": null
+    },
+    {
+      "id": "q24",
+      "question": "Why does the 4-digit SevSeg timer code use 200 repetitions of sevseg.refreshDisplay() with a 5-millisecond delay rather than a single 1-second delay?",
+      "answerability": "answerable",
+      "reference_answer": "A long delay would leave the multiplexed display unrefreshed for most of the second (the instructor says about 955 ms off after 5 ms on). Repeating refreshDisplay() with 5 ms delays 200 times totals about 1 second while keeping the digits refreshed.",
+      "evidence_spans": [
+        {
+          "start_sec": 32825.0,
+          "end_sec": 33035.0,
+          "source_segment_ids": [
+            13364,
+            13365,
+            13366,
+            13367,
+            13368,
+            13369,
+            13370,
+            13371,
+            13372,
+            13373,
+            13374,
+            13375,
+            13376,
+            13377,
+            13378,
+            13379,
+            13380,
+            13381,
+            13382,
+            13383,
+            13384,
+            13385,
+            13386,
+            13387,
+            13388,
+            13389,
+            13390,
+            13391,
+            13392,
+            13393,
+            13394,
+            13395,
+            13396,
+            13397,
+            13398,
+            13399,
+            13400,
+            13401,
+            13402,
+            13403,
+            13404,
+            13405,
+            13406,
+            13407,
+            13408,
+            13409,
+            13410,
+            13411,
+            13412,
+            13413,
+            13414,
+            13415,
+            13416,
+            13417,
+            13418,
+            13419,
+            13420,
+            13421,
+            13422,
+            13423,
+            13424,
+            13425,
+            13426,
+            13427,
+            13428,
+            13429,
+            13430,
+            13431,
+            13432,
+            13433,
+            13434,
+            13435,
+            13436,
+            13437,
+            13438,
+            13439,
+            13440,
+            13441,
+            13442,
+            13443,
+            13444,
+            13445,
+            13446,
+            13447,
+            13448,
+            13449,
+            13450,
+            13451,
+            13452,
+            13453,
+            13454,
+            13455,
+            13456,
+            13457,
+            13458,
+            13459,
+            13460,
+            13461,
+            13462,
+            13463,
+            13464,
+            13465,
+            13466,
+            13467,
+            13468,
+            13469,
+            13470
+          ],
+          "transcript_excerpt": "most people would have suggested was refresh the display and then delayed for one second... it's going to be turned on for 5 milliseconds and then what happens is what for 955 milliseconds it's just going to be off... the right way of doing things is okay we're going to put our seeg we're going to be refreshing it and then we're going to be delaying it for 5 milliseconds... and doing it how many times 200 times... 200 * 5 is 1,000 milliseconds basically what basically a second"
+        }
+      ],
+      "ambiguity_note": null
+    },
+    {
+      "id": "q25",
+      "question": "What baud rate does Matthew recommend when configuring the SoftwareSerial library on an Arduino Nano?",
+      "answerability": "unanswerable",
+      "reference_answer": null,
+      "evidence_spans": [],
+      "ambiguity_note": "The video only demonstrates hardware serial communication using Serial.begin(9600) on the primary UART pins and never discusses or mentions the SoftwareSerial library or its baud rates."
+    }
+  ]
+}
